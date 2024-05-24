@@ -5,22 +5,40 @@ import numpy as np
 from util import classify, set_background
 
 # Set background image
-set_background('./bgs/fghj.png')
+set_background('./bgs/tkt.gif')
+
+# Custom CSS to change title, header, and classification result colors
+st.markdown(
+    """
+    <style>
+    .title {
+        color: #FF6347; /* Change the title color */
+    }
+    .header {
+        color: #1E90FF; /* Change the header color */
+    }
+    .result {
+        color: #32CD32; /* Change the result color */
+    }
+    .score {
+        color: #FFD700; /* Change the score color */
+    }
+    </style>
+    """, 
+    unsafe_allow_html=True
+)
 
 # Set title
-st.title('Pneumonia Classification')
+st.markdown('<h1 class="title">Pneumonia Classification</h1>', unsafe_allow_html=True)
 
 # Set header
-st.header('Please upload a chest X-ray image')
+st.markdown('<h2 class="header">Please upload a chest X-ray image</h2>', unsafe_allow_html=True)
 
-# Upload file with a non-empty label and hide it
-file = st.file_uploader('Upload an image', type=['jpeg', 'jpg', 'png'], label_visibility="collapsed")
+# Upload file
+file = st.file_uploader('', type=['jpeg', 'jpg', 'png'])
 
 # Load classifier
 model = load_model('./model/keras_model.h5')
-
-# Compile the model manually (if needed)
-model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 
 # Load class names
 with open('./model/labels.txt', 'r') as f:
@@ -37,5 +55,5 @@ if file is not None:
     class_name, conf_score = classify(image, model, class_names)
 
     # Write classification result
-    st.write(f"## {class_name}")
-    st.write(f"### Score: {conf_score * 100:.1f}%")
+    st.markdown(f'<h2 class="result">{class_name}</h2>', unsafe_allow_html=True)
+    st.markdown(f'<h3 class="score">Score: {conf_score * 100:.1f}%</h3>', unsafe_allow_html=True)

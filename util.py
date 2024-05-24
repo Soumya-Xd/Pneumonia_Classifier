@@ -1,22 +1,30 @@
+import base64
 import streamlit as st
 import numpy as np
-from PIL import Image
-
+from PIL import ImageOps,Image 
 def set_background(image_file):
     """
-    Sets the background image for the Streamlit app.
+    This function sets the background of a Streamlit app to an image specified by the given image file.
+
+    Parameters:
+        image_file (str): The path to the image file to be used as the background.
+
+    Returns:
+        None
     """
-    st.markdown(
-        f"""
+ 
+    with open(image_file, "rb") as f:
+        img_data = f.read()
+    b64_encoded = base64.b64encode(img_data).decode()
+    style = f"""
         <style>
         .stApp {{
-            background: url({image_file});
-            background-size: cover
+            background-image: url(data:image/png;base64,{b64_encoded});
+            background-size: cover;
         }}
         </style>
-        """,
-        unsafe_allow_html=True
-    )
+    """
+    st.markdown(style, unsafe_allow_html=True)
 
 def preprocess_image(image, target_size):
     """
